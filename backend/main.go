@@ -11,13 +11,31 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+func getAllDocuments(c *gin.Context) {
+	res, err := client.Get("kibana_sample_data_flights", "WKgMOo0Bv61r96xvFWwL")
+	if err != nil {
+		log.Fatalf("Error getting response: %s", err)
+	}
+	defer res.Body.Close()
+	// Check response status
+	if res.IsError() {
+		log.Fatalf("Error: %s", res.String())
+	}
+
+	var r map[string]interface{}
+	// Deserialize the response into a map.
+	if err := json.NewDecoder(res.Body).Decode(&r); err != nil {
+		log.Fatalf("Error parsing the response body: %s", err)
+	}
+
+	c.IndentedJSON(http.StatusOK, r)
+}
+
 func getDocument(c *gin.Context) {
 	query := `{ 
 	"query": { 
-		"term": { 
-			"Carrier": {
-					"value":"ES-Air"
-				} 
+		"match": { 
+				"Carrier": "ES-Air"
 			} 
 		} 
 	}`
@@ -29,8 +47,19 @@ func getDocument(c *gin.Context) {
 	if err != nil {
 		log.Fatalf("Error getting response: %s", err)
 	}
+	defer res.Body.Close()
+	// Check response status
+	if res.IsError() {
+		log.Fatalf("Error: %s", res.String())
+	}
 
-	c.IndentedJSON(http.StatusOK, res)
+	var r map[string]interface{}
+	// Deserialize the response into a map.
+	if err := json.NewDecoder(res.Body).Decode(&r); err != nil {
+		log.Fatalf("Error parsing the response body: %s", err)
+	}
+
+	c.IndentedJSON(http.StatusOK, r)
 }
 
 func getHelloWorld(c *gin.Context) {
@@ -40,7 +69,7 @@ func getHelloWorld(c *gin.Context) {
 var client *elasticsearch.Client
 
 func main() {
-	cert, _ := os.ReadFile("./http_ca.crt")
+	cert, _ := os.ReadFile("../ca.crt")
 
 	cfg := elasticsearch.Config{
 		Addresses: []string{
@@ -48,7 +77,7 @@ func main() {
 			"https://localhost:9201",
 		},
 		Username: "elastic",
-		Password: "doIOriK3vhMP19rMMuTH",
+		Password: "changeme",
 		CACert:   cert,
 	}
 
@@ -82,6 +111,7 @@ func main() {
 	router := gin.Default()
 	router.GET("/hello-world", getHelloWorld)
 	router.GET("/doc", getDocument)
+	router.GET("/docs", getAllDocuments)
 
 	router.Run("localhost:8080")
 }
