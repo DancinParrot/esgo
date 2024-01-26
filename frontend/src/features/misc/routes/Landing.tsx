@@ -1,10 +1,10 @@
-import { Header } from "@/components/Header";
+import { MainLayout } from "@/components/Layout";
 
 export const Landing = () => {
 
   return (
-    <>
-      <Header />
-    </>
+    <MainLayout>
+      <p>test</p>
+    </MainLayout>
   );
 };
