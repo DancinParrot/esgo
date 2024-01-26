@@ -70,7 +70,7 @@ export function Header() {
 
   return (
     <header className={classes.header}>
-      <Container size="md">
+      <Container size="xl">
         <div className={classes.inner}>
           {/* <MantineLogo size={28} /> */}
           <p>Logo</p>

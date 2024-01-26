@@ -12,11 +12,11 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
   return (
     <AppShell
       header={{ height: 60 }}
-      navbar={{
-        width: 300,
-        breakpoint: 'sm',
-        collapsed: { mobile: !opened },
-      }}
+      // navbar={{
+      //   width: 300,
+      //   breakpoint: 'sm',
+      //   collapsed: { mobile: !opened },
+      // }}
       padding="md"
     >
       <AppShell.Header>
